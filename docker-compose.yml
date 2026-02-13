@@ -1,0 +1,42 @@
+version:  "3.0"
+services:
+  
+  otel-collector:
+    image: otel/opentelemetry-collector:0.145.0
+    restart: always 
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otelcol/config.yaml
+    ports:
+      - 1888:1888 # pprof extension
+      - 8888:8888 # Prometheus metrics exposed by the Collector
+      - 8889:8889 # Prometheus exporter metrics
+      - 13133:13133 # health_check extension
+      - 4317:4317 # OTLP gRPC receiver
+      - 4318:4318 # OTLP http receiver
+      - 55679:55679 # zpages extension
+    depends_on:
+      - victoria-traces
+
+  victoria-traces:
+    image: victoriametrics/victoria-traces:latest
+    restart: always
+    ports:
+      - 10428:10428/tcp
+    volumes:
+      - ./victoria-traces-data:/victoria-traces-data
+      
+  grafana:
+    image: grafana/grafana-dev:12.4.0-21803752163
+    restart: always
+    ports:
+      - 3000:3000/tcp
+    volumes:
+      - grafanadata:/var/lib/grafana
+      - ./provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./provisioning/dashboards:/etc/grafana/provisioning/dashboards
+    depends_on:
+      - victoria-traces
+
+volumes:
+  grafanadata: {}
+
