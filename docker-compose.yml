@@ -24,6 +24,19 @@ services:
       - 10428:10428/tcp
     volumes:
       - ./victoria-traces-data:/victoria-traces-data
+
+  victoria-logs:
+    image: victoriametrics/victoria-logs:latest
+    restart: always
+    command:
+      - "--storageDataPath=/victoria-logs-data"
+      - "--httpListenAddr=:9428"
+      - "--loggerLevel=INFO"
+      - "--retentionPeriod=30d"
+    ports:
+      - 9428:9428/tcp
+    volumes:
+      - ./victoria-logs-data:/victoria-logs-data
       
   grafana:
     image: grafana/grafana-dev:12.4.0-21803752163
