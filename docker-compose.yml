@@ -39,7 +39,7 @@ services:
       - ./victoria-logs-data:/victoria-logs-data
       
   grafana:
-    image: grafana/grafana-dev:12.4.0-21803752163
+    image: grafana/grafana:13.1.0-24320339380
     restart: always
     ports:
       - 3000:3000/tcp
