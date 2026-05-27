@@ -16,8 +16,10 @@ exporters:
   #debug:
   #  verbosity: detailed
   otlp_http:
-    endpoint: http://victoria-traces:10428/insert/opentelemetry
-    
+    # endpoint: http://victoria-traces:10428/insert/opentelemetry
+    traces_endpoint: http://victoria-traces:10428/insert/opentelemetry/v1/traces
+    metrics_endpoint : http://victoria-metrics:8428/opentelemetry/v1/metrics
+
 extensions:
   health_check:
     endpoint: 0.0.0.0:13133

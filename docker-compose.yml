@@ -16,6 +16,8 @@ services:
       - 55679:55679 # zpages extension
     depends_on:
       - victoria-traces
+      - victoria-logs
+      - victoria-metrics 
 
   victoria-traces:
     image: victoriametrics/victoria-traces:latest
@@ -37,7 +39,20 @@ services:
       - 9428:9428/tcp
     volumes:
       - ./victoria-logs-data:/victoria-logs-data
-      
+
+  victoria-metrics:
+    image: victoriametrics/victoria-metrics:v1.144.0
+    ports:
+      # HTTP API and OTLP ingestion endpoint
+      - "8428:8428"
+    volumes:
+      - ./victoria-metrics-data:/victoria-metrics-data
+    environment:
+      storageDataPath: "victoria-metrics-data"
+      # Data retention period (how long metrics are kept)
+      retentionPeriod: "90d"
+    restart: unless-stopped
+
   grafana:
     image: grafana/grafana:13.1.0-24320339380
     restart: always
@@ -49,6 +64,8 @@ services:
       - ./provisioning/dashboards:/etc/grafana/provisioning/dashboards
     depends_on:
       - victoria-traces
+      - victoria-logs
+      - victoria-metrics 
 
 volumes:
   grafanadata: {}
