@@ -66,6 +66,8 @@ services:
       - victoria-traces
       - victoria-logs
       - victoria-metrics 
+    environment:
+      GF_INSTALL_PLUGINS: "victoriametrics-metrics-datasource,victoriametrics-logs-datasource"
 
 volumes:
   grafanadata: {}

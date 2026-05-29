@@ -36,4 +36,12 @@ service:
       receivers: [otlp]
       processors: [batch] 
       exporters: [otlp_http]
+    logs:
+      receivers: [otlp]
+      processors: []
+      exporters: [otlp_http]
+    metrics:
+      receivers: [otlp]
+      processors: []
+      exporters: [otlp_http]
 
