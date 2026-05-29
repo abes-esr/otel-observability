@@ -21,24 +21,26 @@ datasources:
     jsonData:
       # --- Configuration du TRACE TO LOGS ---
       tracesToLogsV2:
-        datasourceUid: 'VictoriaLogs' # Doit correspondre EXACTEMENT au nom ou UID de ta source de logs
+        datasourceUid: 'VictoriaLogs'
         spanStartTimeShift: '-20m'
         spanEndTimeShift: '20m'
         filterByTraceID: true
         filterBySpanID: true
-        customQuery: false # Reste à false si tu utilises le mode standard (décoché)
+        customQuery: false
 
       # --- Configuration du TRACE TO METRICS ---
       tracesToMetrics:
-        datasourceUid: 'VictoriaMetrics' # Doit correspondre au nom de ta source Prometheus
+        datasourceUid: 'VictoriaMetrics'
         spanStartTimeShift: '-20m'
         spanEndTimeShift: '20m'
-        # Insertion des requêtes personnalisées de ton image_ff0fbe.png
+        tags:
+          - key: 'host.name'
+          - key: 'container.id'
         queries:
           - name: 'Memory usage'
-            query: 'jvm.memory.used'
+            query: 'jvm.memory.used{$$__tags}'
           - name: 'CPU usage'
-            query: 'system.cpu.usage'
+            query: 'jvm.cpu.recent_utilization{$$__tags}'
 
 # ==========================================
   # 3. Le Backend de Metrics pour visualisation dans Drilldown (VictoriaMetrics)
