@@ -1,2 +1,10 @@
 lgtm/**/data/*
 !lgtm/**/data/.gitkeep
+provisioning/data/*
+!provisioning/data/.gitkeep
+victoria-logs-data/data/*
+!victoria-logs-data/data/.gitkeep
+victoria-metrics-data/data/*
+!victoria-metrics-data/data/.gitkeep
+victoria-traces-data/data/*
+!victoria-traces-data/data/.gitkeep
