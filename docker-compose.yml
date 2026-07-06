@@ -22,6 +22,11 @@ services:
   victoria-traces:
     image: victoriametrics/victoria-traces:latest
     restart: always
+    command:
+      - "--retentionPeriod=8w"
+      - "--storageDataPath=/victoria-traces-data"
+      - "--httpListenAddr=:10428"
+      - "--servicegraph.enableTask=true"
     ports:
       - 10428:10428/tcp
     volumes:
@@ -31,10 +36,10 @@ services:
     image: victoriametrics/victoria-logs:latest
     restart: always
     command:
+      - "--retentionPeriod=8w"
       - "--storageDataPath=/victoria-logs-data"
       - "--httpListenAddr=:9428"
       - "--loggerLevel=INFO"
-      - "--retentionPeriod=30d"
     ports:
       - 9428:9428/tcp
     volumes:
@@ -42,15 +47,16 @@ services:
 
   victoria-metrics:
     image: victoriametrics/victoria-metrics:v1.144.0
+    command:
+      - "--retentionPeriod=8w"
+      - "--storageDataPath=/victoria-metrics-data"
+      - "--httpListenAddr=:8428"
+      - "--opentelemetry.usePrometheusNaming=true"
+      - "--enableMetadata=true"
     ports:
-      # HTTP API and OTLP ingestion endpoint
       - "8428:8428"
     volumes:
       - ./victoria-metrics-data:/victoria-metrics-data
-    environment:
-      storageDataPath: "victoria-metrics-data"
-      # Data retention period (how long metrics are kept)
-      retentionPeriod: "90d"
     restart: unless-stopped
 
   grafana:
