@@ -44,4 +44,4 @@ query_scheduler:
   use_scheduler_ring: false
 
 limits_config:
-  retention_period: 720h # 30 jours
+  retention_period: 24h # 1 jour
