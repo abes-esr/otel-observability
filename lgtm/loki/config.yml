@@ -44,4 +44,12 @@ query_scheduler:
   use_scheduler_ring: false
 
 limits_config:
+  retention_enabled: true
   retention_period: 24h # 1 jour
+
+compactor:
+  working_directory: /data/loki/compactor
+  shared_store: filesystem
+  retention_enabled: true
+  retention_delete_delay: 2h
+  retention_delete_worker_count: 150
