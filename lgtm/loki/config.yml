@@ -45,7 +45,7 @@ query_scheduler:
 
 limits_config:
   retention_enabled: true
-  retention_period: 24h # 1 jour
+  retention_period: 5d # 5 jours
 
 compactor:
   working_directory: /data/loki/compactor

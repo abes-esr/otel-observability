@@ -65,4 +65,4 @@ overrides:
 
 compactor:
   compaction:
-    block_retention: 24h # 1 jour
+    block_retention: 5d # 5 jours

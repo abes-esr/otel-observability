@@ -32,4 +32,4 @@ query_backend:
   address: 127.0.0.1:9097
 
 compactor:
-  blocks_retention_period: 24h # 1 jour
+  blocks_retention_period: 5d # 5 jours
