@@ -1,8 +1,14 @@
 lgtm/**/data/*
 !lgtm/**/data/.gitkeep
 volumes/victoria-logs-data/*
-!volumes/victoria-logs-data/.gitkeep
+volumes/victoria-logs-data/keep/*
+!volumes/victoria-logs-data/keep/.gitkeep
 volumes/victoria-metrics-data/*
-!volumes/victoria-metrics-data/.gitkeep
+volumes/victoria-metrics-data/keep/*
+!volumes/victoria-metrics-data/keep/.gitkeep
 volumes/victoria-traces-data/*
-!volumes/victoria-traces-data/.gitkeep
+volumes/victoria-traces-data/keep/*
+!volumes/victoria-traces-data/keep/.gitkeep
+volumes/grafana-data/*
+volumes/grafana-data/keep/*
+!volumes/grafana-data/keep/.gitkeep
