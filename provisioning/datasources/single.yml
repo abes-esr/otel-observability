@@ -58,3 +58,29 @@ datasources:
     type: victoriametrics-logs-datasource
     access: proxy
     url: http://victoria-logs:9428
+
+# ==========================================
+  # 5. Le Backend de Traces Tempo pour le Drilldown et service Mesh (VictoriaLogs)
+  # ==========================================
+  - name: VictoriaTracesTempo
+    type: tempo
+    access: proxy
+    url: http://victoria-traces:10428/select/tempo
+    isDefault: false
+    editable: true
+    jsonData:
+      # Configuration du Service Graph
+      serviceMap:
+        datasourceUid: "Prometheus"
+      # Configuration du Tempo Search (Filtres statiques)
+      search:
+        hide: false
+        filters:
+          - id: "service-name"
+            scope: "resource"
+            tag: "service.name"
+            operator: "="
+          - id: "span-name"
+            scope: "span"
+            tag: "name"
+            operator: "="
