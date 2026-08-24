@@ -73,28 +73,3 @@ services:
       - otel-collector
     environment:
       GF_INSTALL_PLUGINS: "victoriametrics-metrics-datasource,victoriametrics-logs-datasource"
-
-  lgtm:
-    image: grafana/otel-lgtm:0.28.0
-    container_name: lgtm
-    restart: unless-stopped
-    environment:
-      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel
-      - GF_PATHS_CONFIG=/otel-lgtm/grafana/conf/grafana.ini
-      - GF_SERVER_ROOT_URL=http://diplotaxis7-dev.v212.abes.fr:3000/
-      - PROMETHEUS_EXTRA_ARGS=--storage.tsdb.retention.time=30d
-    volumes:
-      - ./lgtm/loki/config.yml:/otel-lgtm/loki-config.yaml
-      - ./lgtm/tempo/config.yml:/otel-lgtm/tempo-config.yaml
-      - ./lgtm/pyroscope/config.yml:/otel-lgtm/pyroscope-config.yaml
-      - ./lgtm/grafana/data:/data/grafana/data
-      - ./lgtm/prometheus/data:/data/prometheus
-      - ./lgtm/loki/data:/data/loki
-      - ./lgtm/pyroscope/data:/data/pyroscope
-      - ./lgtm/tempo/data:/data/tempo
-      - ./lgtm/prometheus/prometheus.yml:/otel-lgtm/prometheus.yaml
-    ports:
-        - "4317:4317"
-        - "4318:4318"
-        - "3000:3000"
-        - "9090:9090"
