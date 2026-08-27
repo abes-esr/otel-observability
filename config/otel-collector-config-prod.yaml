@@ -1,0 +1,92 @@
+connectors:
+  # Génère le service Mesh
+  service_graph:
+    latency_histogram_buckets: [2ms, 8ms, 50ms, 100ms, 200ms, 500ms, 1s, 2s, 5s, 10s]
+    dimensions:
+      - http.method
+      - http.status_code
+      - service.namespace
+  # Génère la heatmap des traces et leurs durées
+  spanmetrics:
+    exclude_dimensions: ["span.name"]
+    dimensions:
+      - name: http.method
+      - name: http.status_code
+      - name: rpc.method
+    histogram:
+      explicit:
+        buckets: [10ms, 100ms, 500ms, 1s, 5s, 15s, 30s, 1m, 2m, 5m]
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  # Compression des logs et découpage en lot de métriques (4000 max)
+  batch:
+    send_batch_size: 2000      # Déclenche l'envoi à 2000 métriques
+    send_batch_max_size: 4000  # OBLIGATOIRE : Force le découpage pour ne jamais dépasser cette taille
+    timeout: 1s
+  # Épure les métriques en supprimant certains attributs
+  transform/clean_metrics:
+    error_mode: ignore
+    metric_statements:
+      - context: resource
+        statements:
+          - delete_key(attributes, "service.instance.id")
+          - delete_key(attributes, "process.pid")
+          - delete_key(attributes, "container.id")
+          - delete_key(attributes, "process.command_args")
+          - delete_key(attributes, "os.description")
+  # Échantillonne les traces en fonction de leurs status et de leurs durées
+  tail_sampling:
+    policies:
+      # Capturer toutes les traces en erreur
+      - name: error-policy
+        type: status_code
+        status_code:
+          status_codes: [ERROR]
+      # Capturer les traces ayant une latence supérieur à 2s
+      - name: latency-policy
+        type: latency
+        latency:
+          threshold_ms: 2000
+      # Capturer 30% des traces valides
+      - name: probabilistic-policy
+        type: probabilistic
+        probabilistic:
+          sampling_percentage: 30
+
+exporters:
+  otlp_http:
+    traces_endpoint: http://victoria-traces:10428/insert/opentelemetry/v1/traces
+    metrics_endpoint : http://victoria-metrics:8428/opentelemetry/v1/metrics
+    logs_endpoint : http://victoria-logs:9428/insert/opentelemetry/v1/logs
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+  pprof:
+    endpoint: 0.0.0.0:1777
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+service:
+  extensions: [health_check, pprof, zpages]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [tail_sampling, batch] 
+      exporters: [otlp_http, service_graph, spanmetrics]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp_http]
+    metrics:
+      receivers: [otlp, service_graph, spanmetrics]
+      processors: [transform/clean_metrics, batch]
+      exporters: [otlp_http]

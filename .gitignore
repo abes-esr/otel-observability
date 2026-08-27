@@ -12,3 +12,4 @@ volumes/victoria-traces-data/keep/*
 volumes/grafana-data/*
 volumes/grafana-data/keep/*
 !volumes/grafana-data/keep/.gitkeep
+.env
