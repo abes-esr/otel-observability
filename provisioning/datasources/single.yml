@@ -84,3 +84,18 @@ datasources:
             scope: "span"
             tag: "name"
             operator: "="
+      # Configuration du TracesToLogs
+      tracesToLogsV2:
+        datasourceUid: "VictoriaLogs"
+        # Décalages temporels
+        spanStartTimeShift: "-20m"
+        spanEndTimeShift: "20m" 
+        # Mapping des tags (spans -> logs)
+        tags:
+          - key: "service.name"
+            value: "service.name"
+          - key: "service.namespace"
+            value: "service.namespace" 
+        filterByTraceID: true
+        filterBySpanID: true
+        customQuery: false
