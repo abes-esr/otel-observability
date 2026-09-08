@@ -1126,14 +1126,23 @@
                   "kind": "Transformation",
                   "spec": {
                     "options": {
-                      "excludeByName": {},
+                      "excludeByName": {
+                        "detected_level": true,
+                        "id": true,
+                        "labels": true,
+                        "streamId": true,
+                        "streams": true
+                      },
                       "includeByName": {},
                       "indexByName": {
-                        "Line": 1,
+                        "Line": 2,
                         "Time": 0,
                         "detected_level": 4,
+                        "id": 5,
                         "labels": 3,
-                        "severity": 2
+                        "severity_text": 1,
+                        "streamId": 7,
+                        "streams": 6
                       },
                       "orderByMode": "manual",
                       "renameByName": {
@@ -1190,7 +1199,7 @@
                     "properties": [
                       {
                         "id": "custom.width",
-                        "value": 226
+                        "value": 185
                       }
                     ]
                   },
@@ -1226,7 +1235,7 @@
                     "properties": [
                       {
                         "id": "custom.width",
-                        "value": 834
+                        "value": 921
                       }
                     ]
                   },
@@ -1242,18 +1251,25 @@
                         "value": true
                       }
                     ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Severity"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 97
+                      }
+                    ]
                   }
                 ]
               },
               "options": {
                 "cellHeight": "sm",
                 "showHeader": true,
-                "sortBy": [
-                  {
-                    "desc": true,
-                    "displayName": "Line"
-                  }
-                ]
+                "sortBy": []
               }
             },
             "version": "13.1.0-24320339380"
@@ -2270,7 +2286,7 @@
           "description": "",
           "id": 45,
           "links": [],
-          "title": "CPU Usage (Percent)",
+          "title": "Host CPU Usage (Percent)",
           "vizConfig": {
             "group": "timeseries",
             "kind": "VizConfig",
@@ -2322,7 +2338,8 @@
                         "value": 0
                       }
                     ]
-                  }
+                  },
+                  "unit": "percent"
                 },
                 "overrides": [
                   {
@@ -2338,6 +2355,14 @@
                           "group": "A",
                           "mode": "none"
                         }
+                      },
+                      {
+                        "id": "custom.fillOpacity",
+                        "value": 0
+                      },
+                      {
+                        "id": "custom.lineWidth",
+                        "value": 2
                       }
                     ]
                   }
@@ -2386,12 +2411,34 @@
                         "editorMode": "code",
                         "expr": "system_memory_usage_bytes{\n    host_name=\"$hostname\",\n    state=\"used\"\n}",
                         "format": "time_series",
-                        "legendFormat": "$hostname",
+                        "legendFormat": "Total Host",
                         "range": true
                       },
                       "version": "v0"
                     },
                     "refId": "Memory usage bytes"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "${prometheus_datasource}"
+                      },
+                      "group": "victoriametrics-metrics-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorMode": "code",
+                        "expr": "avg by (service_name) (container_memory_usage_total_bytes{host_name=\"$hostname\"})",
+                        "format": "time_series",
+                        "legendFormat": "__auto",
+                        "range": true
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "Containers Memory Usage"
                   }
                 }
               ],
@@ -2402,7 +2449,7 @@
           "description": "",
           "id": 46,
           "links": [],
-          "title": "Memory Usage (Bytes)",
+          "title": "Host Memory Usage (Bytes)",
           "vizConfig": {
             "group": "timeseries",
             "kind": "VizConfig",
@@ -2458,19 +2505,31 @@
                         "value": 80
                       }
                     ]
-                  }
+                  },
+                  "unit": "bytes"
                 },
                 "overrides": [
                   {
                     "matcher": {
                       "id": "byName",
-                      "options": "Value",
+                      "options": "Total Host",
                       "scope": "series"
                     },
                     "properties": [
                       {
-                        "id": "unit",
-                        "value": "bytes"
+                        "id": "custom.stacking",
+                        "value": {
+                          "group": "A",
+                          "mode": "none"
+                        }
+                      },
+                      {
+                        "id": "custom.fillOpacity",
+                        "value": 0
+                      },
+                      {
+                        "id": "custom.lineWidth",
+                        "value": 2
                       }
                     ]
                   }
@@ -2953,7 +3012,7 @@
           "description": "",
           "id": 53,
           "links": [],
-          "title": "CPU Usage (Percent)",
+          "title": "Container CPU Usage (Percent)",
           "vizConfig": {
             "group": "timeseries",
             "kind": "VizConfig",
@@ -4023,7 +4082,7 @@
           "description": "",
           "id": 61,
           "links": [],
-          "title": "Network IO (RX / TX)",
+          "title": "Container Network IO (RX / TX)",
           "vizConfig": {
             "group": "timeseries",
             "kind": "VizConfig",
@@ -4180,7 +4239,7 @@
           "description": "",
           "id": 62,
           "links": [],
-          "title": "Disk I/O (Read / Write)",
+          "title": "Container Disk I/O (Read / Write)",
           "vizConfig": {
             "group": "timeseries",
             "kind": "VizConfig",
